@@ -1,6 +1,5 @@
-package com.projeto.strproducer.config;
+package com.projeto.paymentservice.config;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
@@ -10,12 +9,12 @@ import org.springframework.kafka.config.TopicBuilder;
 import org.springframework.kafka.core.KafkaAdmin;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 @Configuration
 @RequiredArgsConstructor
-public class KafkaAdminConfig {
-
-    public final KafkaProperties properties = new KafkaProperties();
+public class kafkaAdminConfig {
+    private final KafkaProperties properties = new KafkaProperties();
 
     @Bean
     public KafkaAdmin kafkaAdmin() {
@@ -25,9 +24,9 @@ public class KafkaAdminConfig {
     }
 
     @Bean
-    public KafkaAdmin.NewTopics topics() {
+    public KafkaAdmin.NewTopics newTopics() {
         return new KafkaAdmin.NewTopics(
-                TopicBuilder.name("str-topic").partitions(2).replicas(1).build()
+                TopicBuilder.name("payment-topic").partitions(1).build()
         );
     }
 

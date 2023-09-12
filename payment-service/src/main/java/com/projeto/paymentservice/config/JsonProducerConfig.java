@@ -1,4 +1,4 @@
-package com.projeto.strproducer.config;
+package com.projeto.paymentservice.config;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -9,27 +9,29 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
+import org.springframework.kafka.support.serializer.JsonSerializer;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
 @Configuration
 @RequiredArgsConstructor
-public class StringProducerFactoryConfig {
+public class JsonProducerConfig {
 
     private final KafkaProperties properties = new KafkaProperties();
 
     @Bean
-    public ProducerFactory<String, String> producerFactory(){
+    public ProducerFactory jsonProducerFactory() {
         var configs = new HashMap<String, Object>();
         configs.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, properties.getBootstrapServers());
         configs.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        configs.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        return new DefaultKafkaProducerFactory<>(configs);
+        configs.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+        return new DefaultKafkaProducerFactory(configs, new StringSerializer(), new JsonSerializer());
     }
 
     @Bean
-    public KafkaTemplate<String, String> kafkaTemplate(ProducerFactory<String, String> producerFactory){
-        return new KafkaTemplate<>(producerFactory);
+    public KafkaTemplate<String, Serializable> jsonKafkaTemplate(ProducerFactory jsonProducerFactory) {
+        return new KafkaTemplate<>(jsonProducerFactory);
     }
 
 }
